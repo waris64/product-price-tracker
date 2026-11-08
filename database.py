@@ -1,9 +1,7 @@
 import sqlite3 
 connection = sqlite3.connect('price_tracker.db')
-
 # Enable foreign key validation
 connection.execute("PRAGMA foreign_keys = ON")
-
 # create the products table
 connection.execute("""
 CREATE TABLE IF NOT EXISTS products (
@@ -16,7 +14,10 @@ CREATE TABLE IF NOT EXISTS products (
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )
 """)
-
+# INSERTING THE VALUES IN THE COLUMNS
+# inserted = connection.execute(""" 
+# INSERT INTO products(id,name,url,current_price,availability,rating) VALUES (1,'Samsung A55','https://example.com/samsung-a55' , 115000,'In Stock',4.5)
+# """)
 #CREATE PRICE HISTORY TABLE 
 connection.execute("""
         CREATE TABLE IF NOT EXISTS price_history (
@@ -28,7 +29,8 @@ connection.execute("""
 """)
 connection.commit()
 cursor =  connection.execute(
-"""SELECT name
+"""
+SELECT name
 FROM sqlite_master
 WHERE type = 'table' 
 AND name NOT LIKE 'sqlite_%'   
@@ -36,5 +38,15 @@ AND name NOT LIKE 'sqlite_%'
 result = cursor.fetchall()
 print("Result = " ,result)
 print("Tables created successfully")
-
+    # retrives the every column from the products
+gettingProducts = connection.execute(
+    """
+    SELECT * FROM products
+    """
+    )
+res = gettingProducts.fetchall();
+print("All products :",res)
+tableInfo = connection.execute("""PRAGMA table_info(products)""")
+productsFetched = tableInfo.fetchall()
+print("Checking result: ", productsFetched)
 connection.close()
